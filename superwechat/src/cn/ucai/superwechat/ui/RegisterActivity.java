@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyphenate.EMError;
@@ -28,8 +29,8 @@ import com.hyphenate.exceptions.HyphenateException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.domain.Result;
 import cn.ucai.superwechat.net.NetDao;
 import cn.ucai.superwechat.net.OnCompleteListener;
@@ -58,6 +59,8 @@ public class RegisterActivity extends BaseActivity {
     String usernick;
     String pwd;
     ProgressDialog pd;
+    @BindView(R.id.txt_title)
+    TextView txtTitle;
 
 
     @Override
@@ -66,6 +69,8 @@ public class RegisterActivity extends BaseActivity {
         setContentView(R.layout.em_activity_register);
         ButterKnife.bind(this);
         imgBack.setVisibility(View.VISIBLE);
+        txtTitle.setVisibility(View.VISIBLE);
+        txtTitle.setText("用户注册");
     }
 
     public void register() {
@@ -96,7 +101,6 @@ public class RegisterActivity extends BaseActivity {
             pd.show();
 
             registerAppSever();
-
             registerEMServer();
 
         }
