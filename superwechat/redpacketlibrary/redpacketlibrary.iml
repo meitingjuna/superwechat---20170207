@@ -101,7 +101,6 @@
     <orderEntry type="library" exported="" name="redpacket-3.3.1" level="project" />
     <orderEntry type="library" exported="" name="alipaySdk-20160516" level="project" />
     <orderEntry type="module" module-name="EaseUI" exported="" />
-    <orderEntry type="library" exported="" name="android-android-23" level="project" />
     <orderEntry type="library" exported="" name="HwPush_SDK_V2705_nomap" level="project" />
     <orderEntry type="library" exported="" name="hyphenatechat_3.2.3" level="project" />
     <orderEntry type="library" exported="" name="android-support-v4" level="project" />
