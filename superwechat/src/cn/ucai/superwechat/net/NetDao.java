@@ -1,0 +1,31 @@
+package cn.ucai.superwechat.net;
+
+import android.content.Context;
+
+import cn.ucai.superwechat.utils.MD5;
+import cn.ucai.superwechat.utils.OkHttpUtils;
+import cn.ucai.superwechat.widget.I;
+
+/**
+ * Created by MTJ on 2017/2/8.
+ */
+
+public class NetDao {
+    public static void register(Context context,String username,String nick,String password,OnCompleteListener<String> listener){
+        OkHttpUtils<String> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_REGISTER)
+                .post()
+                .addParam(I.User.USER_NAME,username)
+                .addParam(I.User.NICK,nick)
+                .addParam(I.User.PASSWORD, MD5.getMessageDigest(password))
+                .targetClass(String.class)
+                .execute(listener);
+    }
+    public static void unregister(Context context,String username,OnCompleteListener<String> listener){
+        OkHttpUtils<String> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_UNREGISTER)
+                .addParam(I.User.USER_NAME,username)
+                .targetClass(String.class)
+                .execute(listener);
+    }
+}
