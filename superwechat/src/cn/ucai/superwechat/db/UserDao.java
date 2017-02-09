@@ -115,7 +115,7 @@ public class UserDao {
 	 *
 	 * @param contactList
 	 */
-	public void saveCContactList(List<User> contactList) {
+	public void saveAppContactList(List<User> contactList) {
 		SuperWeChatDBManager.getInstance().saveAppContactList(contactList);
 	}
 
@@ -124,7 +124,7 @@ public class UserDao {
 	 *
 	 * @return
 	 */
-	public Map<String, User> getAppVContactList() {
+	public Map<String, User> getAppContactList() {
 
 		return SuperWeChatDBManager.getInstance().getAppContactList();
 	}

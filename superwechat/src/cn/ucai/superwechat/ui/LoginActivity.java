@@ -158,41 +158,6 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    /*private void loginAppServer() {
-        //
-        NetDao.login(this, currentUsername, currentPassword, new OnCompleteListener<String>() {
-            @Override
-            public void onSuccess(String s) *//*{
-                L.e(TAG, "login,s=" + s);
-                if (s != null) {
-                    Result result = ResultUtils.getResultFromJson(s, User.class);
-                    if (result != null) {
-                        loginEMServer();
-                    } else {
-                        if (result.getRetCode() == I.MSG_LOGIN_UNKNOW_USER) {
-                            CommonUtils.showShortToast(R.string.Login_yhbcz);
-
-                        } else if (result.getRetCode() == I.MSG_LOGIN_ERROR_PASSWORD) {
-                            CommonUtils.showShortToast(R.string.Login_mmcw);
-                        } else {
-                            CommonUtils.showShortToast(R.string.Login_failed);
-                        }
-                    }
-                } else {
-                    pd.dismiss();
-                    CommonUtils.showShortToast(R.string.Login_failed);
-                }
-            }*//*
-
-            @Override
-            public void onError(String error) {
-                pd.dismiss();
-                CommonUtils.showShortToast(R.string.Login_failed);
-                L.e(TAG, "error=" + error);
-
-            }
-        });
-    }*/
 
     private void loginEMServer() {
         // call login method
