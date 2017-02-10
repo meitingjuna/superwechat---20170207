@@ -126,7 +126,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
     private void initFrangment() {
         conversationListFragment = new ConversationListFragment();
         contactListFragment = new ContactListFragment();
-        //SettingsFragment settingFragment = new SettingsFragment();
+        //SettingsActivity settingFragment = new SettingsActivity();
        ProfileFragment profileFragment = new ProfileFragment();
        // fragments = new Fragment[]{conversationListFragment, contactListFragment, settingFragment};
 
