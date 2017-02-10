@@ -389,16 +389,16 @@ public class SuperWeChatDBManager {
                 values.put(UserDao.USER_COLUMN_NAME, user.getMUserName());
                 if(user.getMUserNick() != null)
                     values.put(UserDao.USER_COLUMN_NAME_NICK, user.getMUserNick());
-                if(user.getMAvatarId() != null)
-                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getAvatar());
-                if(user.getMAvatarPath() != null)
-                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarPath());
-                if(user.getMAvatarSuffix() != null)
-                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarSuffix());
-                if(user.getMAvatarType() != null)
-                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarType());
-                if(user.getMAvatarLastUpdateTime() != null)
-                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarLastUpdateTime());
+                if(user.getMAvatarId()!= null)
+                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarId());
+                if(user.getMAvatarPath()!= null)
+                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_PATH, user.getMAvatarPath());
+                if(user.getMAvatarSuffix()!= null)
+                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_SUFFIX, user.getMAvatarSuffix());
+                if(user.getMAvatarType()!= null)
+                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_TYPE, user.getMAvatarType());
+                if(user.getMAvatarLastUpdateTime()!= null)
+                    values.put(UserDao.USER_COLUMN_NAME_AVATAR_UPDATE_TIME, user.getMAvatarLastUpdateTime());
                 db.replace(UserDao.USER_TABLE_NAME, null, values);
             }
         }
@@ -416,22 +416,22 @@ public class SuperWeChatDBManager {
             Cursor cursor = db.rawQuery("select * from " + UserDao.USER_TABLE_NAME /* + " desc" */, null);
             while (cursor.moveToNext()) {
                 User user = new User();
+
                 user.setMUserName(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME)));
                 user.setMUserNick(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_NICK)));
                 user.setMAvatarId(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR_ID)));
                 user.setMAvatarPath(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR_PATH)));
                 user.setMAvatarType(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR_TYPE)));
                 user.setMAvatarSuffix(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR_SUFFIX)));
-                user.setMAvatarLastUpdateTime(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR_UPDATE_TIME)));
-
-                    EaseCommonUtils.setAppUserInitialLetter(user);
+                user.setMAvatarLastUpdateTime(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME_AVATAR_SUFFIX)));
+                EaseCommonUtils.setAppUserInitialLetter(user);
                 users.put(user.getMUserName(), user);
             }
-
             cursor.close();
         }
         return users;
     }
+
 
     /**
      * delete a contact
@@ -454,16 +454,16 @@ public class SuperWeChatDBManager {
         values.put(UserDao.USER_COLUMN_NAME, user.getMUserName());
         if(user.getMUserNick() != null)
             values.put(UserDao.USER_COLUMN_NAME_NICK, user.getMUserNick());
-        if(user.getMAvatarId() != null)
+        if(user.getMAvatarId()!= null)
             values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarId());
-        if(user.getMAvatarPath() != null)
-            values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarPath());
-        if(user.getMAvatarSuffix() != null)
-            values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarSuffix());
-        if(user.getMAvatarType() != null)
-            values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarType());
-        if(user.getMAvatarLastUpdateTime() != null)
-            values.put(UserDao.USER_COLUMN_NAME_AVATAR_ID, user.getMAvatarLastUpdateTime());
+        if(user.getMAvatarPath()!= null)
+            values.put(UserDao.USER_COLUMN_NAME_AVATAR_PATH, user.getMAvatarPath());
+        if(user.getMAvatarSuffix()!= null)
+            values.put(UserDao.USER_COLUMN_NAME_AVATAR_SUFFIX, user.getMAvatarSuffix());
+        if(user.getMAvatarType()!= null)
+            values.put(UserDao.USER_COLUMN_NAME_AVATAR_TYPE, user.getMAvatarType());
+        if(user.getMAvatarLastUpdateTime()!= null)
+            values.put(UserDao.USER_COLUMN_NAME_AVATAR_UPDATE_TIME, user.getMAvatarLastUpdateTime());
         if(db.isOpen()){
             db.replace(UserDao.USER_TABLE_NAME, null, values);
         }

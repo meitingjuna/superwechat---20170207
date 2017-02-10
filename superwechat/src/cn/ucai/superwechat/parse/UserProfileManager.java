@@ -165,29 +165,30 @@ public class UserProfileManager {
 
             }
         });
-        L.e("UserProfileManager", "username=" + EMClient.getInstance().getCurrentUser());
+        L.e("userProfileManager","asyncGetCurrentUserInfo,username="+EMClient.getInstance().getCurrentUser());
         NetDao.getUserInfoUsername(activity, EMClient.getInstance().getCurrentUser(), new OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
-                L.e("UserProfileManager", "s=" + s);
                 if (s != null) {
-                    Result result = ResultUtils.getListResultFromJson(s, User.class);
+                    Result result = ResultUtils.getResultFromJson(s, User.class);
                     if (result != null && result.isRetMsg()) {
                         User user = (User) result.getRetData();
-                        if (user!=null) {
+                        if(user!=null){
                             SuperWeChatHelper.getInstance().saveAppContact(user);
                             setCurrentUserNick(user.getMUserNick());
                             setCurrentUserAvatar(user.getAvatar());
                         }
+
+
                     }
+
                 }
 
             }
 
             @Override
             public void onError(String error) {
-                L.e("UserProfileManager", "error" + error);
-
+                L.e("UserProfileManager","error="+error);
 
             }
         });
