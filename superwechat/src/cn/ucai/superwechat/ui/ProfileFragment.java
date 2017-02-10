@@ -67,7 +67,7 @@ public class ProfileFragment extends Fragment {
 
     private void initData() {
         String username = EMClient.getInstance().getCurrentUser();
-        tvProfileUsername.setText(username);
+        tvProfileUsername.setText("微信号: "+username);
         EaseUserUtils.setAppUserNick(username,tvProfileNickname);
         EaseUserUtils.setAppUserAvatar(getContext(),username,ivProfileAvatar);
 

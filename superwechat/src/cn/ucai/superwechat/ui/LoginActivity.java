@@ -64,11 +64,12 @@ public class LoginActivity extends BaseActivity {
     EditText etUsername;
     @BindView(R.id.et_password)
     EditText etPassword;
+
+    private boolean progressShow;
+    private boolean autoLogin = false;
     ProgressDialog pd;
     String currentUsername;
     String currentPassword;
-    private boolean progressShow;
-    private boolean autoLogin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +87,7 @@ public class LoginActivity extends BaseActivity {
         imgBack.setVisibility(View.VISIBLE);
         txtTitle.setVisibility(View.VISIBLE);
         txtTitle.setText(R.string.login);
-        setlistener();
 
-
-    }
-
-    private void setlistener() {
         // if user changed, clear the password
         etUsername.addTextChangedListener(new TextWatcher() {
             @Override
@@ -101,6 +97,7 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
@@ -153,23 +150,55 @@ public class LoginActivity extends BaseActivity {
         SuperWeChatHelper.getInstance().setCurrentUserName(currentUsername);
 
         final long start = System.currentTimeMillis();
-        //loginAppServer();
+        // call login method
+        // loginAppServer();
         loginEMServer();
-
     }
 
+    private void loginAppServer() {
+        NetDao.login(this, currentUsername, currentPassword, new OnCompleteListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                L.e(TAG, "login:" + s);
+                if (s != null) {
+                    Result result = ResultUtils.getResultFromJson(s, User.class);
+                    if(result!=null){
+                        loginEMServer();
+                    } else {
+                        if(result.getRetCode()== I.MSG_LOGIN_UNKNOW_USER){
+                            CommonUtils.showShortToast("账户不存在");
+
+                        }else if (result.getRetCode()==I.MSG_LOGIN_ERROR_PASSWORD){
+                            CommonUtils.showShortToast("账户密码错误");
+                        }else {
+                            CommonUtils.showShortToast(R.string.Login_failed);
+                        }
+                    }
+                }
+                else {
+                    pd.dismiss();
+                    CommonUtils.showLongToast(R.string.Login_failed);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                pd.dismiss();
+                CommonUtils.showLongToast(R.string.Login_failed);
+                L.e(TAG, "error=" + error);
+
+            }
+        });
+    }
 
     private void loginEMServer() {
-        // call login method
         Log.d(TAG, "EMClient.getInstance().login");
         EMClient.getInstance().login(currentUsername, MD5.getMessageDigest(currentPassword), new EMCallBack() {
 
             @Override
             public void onSuccess() {
                 Log.d(TAG, "login: onSuccess");
-
                 loginSuccess();
-
 
 
             }
@@ -194,7 +223,6 @@ public class LoginActivity extends BaseActivity {
                 });
             }
         });
-
     }
 
     private void loginSuccess() {
@@ -223,6 +251,10 @@ public class LoginActivity extends BaseActivity {
     }
 
 
+//    public void register(View view) {
+//        startActivityForResult(new Intent(this, RegisterActivity.class), 0);
+//    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -242,8 +274,6 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.btn_register:
                 MFGT.gotoRegister(this);
-
-
                 break;
         }
     }

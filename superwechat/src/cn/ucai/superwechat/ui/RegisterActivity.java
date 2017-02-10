@@ -45,7 +45,7 @@ import cn.ucai.superwechat.widget.I;
  * register screen
  */
 public class RegisterActivity extends BaseActivity {
-    private static final String TAG = RegisterActivity.class.getSimpleName();
+    private static final String TAG = "RegisterActivity";
     @BindView(R.id.et_username)
     EditText etUsername;
     @BindView(R.id.et_nickname)
@@ -56,8 +56,12 @@ public class RegisterActivity extends BaseActivity {
     EditText etConfirmPassword;
     @BindView(R.id.img_back)
     ImageView imgBack;
+    //private EditText etUsername;
+    //private EditText etPassword;
+    // private EditText etConfirmPassword;
+
     String username;
-    String usernick;
+    String userNick;
     String pwd;
     ProgressDialog pd;
     @BindView(R.id.txt_title)
@@ -65,18 +69,20 @@ public class RegisterActivity extends BaseActivity {
 
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.em_activity_register);
         ButterKnife.bind(this);
         imgBack.setVisibility(View.VISIBLE);
         txtTitle.setVisibility(View.VISIBLE);
-        txtTitle.setText("用户注册");
+        txtTitle.setText(R.string.register);
+
     }
 
     public void register() {
         username = etUsername.getText().toString().trim();
-        usernick = etNickname.getText().toString().trim();
+        userNick = etNickname.getText().toString().trim();
         pwd = etPassword.getText().toString().trim();
         String confirm_pwd = etConfirmPassword.getText().toString().trim();
         if (TextUtils.isEmpty(username)) {
@@ -101,50 +107,48 @@ public class RegisterActivity extends BaseActivity {
             pd.setMessage(getResources().getString(R.string.Is_the_registered));
             pd.show();
 
-            registerAppSever();
-            registerEMServer();
+            registerAppServer();
 
         }
     }
 
-    private void registerAppSever() {
-        // 注册自己的服务器
-        NetDao.register(this, username, usernick, pwd, new OnCompleteListener<String>() {
+    private void registerAppServer() {
+        //注册自己服务器账号
+        NetDao.register(this, username, userNick, pwd, new OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
                 if (s != null) {
-                    Result result = ResultUtils.getListResultFromJson(s, null);
+                    Result result = ResultUtils.getResultFromJson(s, null);
                     if (result != null) {
                         if (result.isRetMsg()) {
-                            // 注册成功后调用环信的注册
+                            //注册成功后调用环信注册
                             registerEMServer();
                         } else {
                             pd.dismiss();
                             if (result.getRetCode() == I.MSG_REGISTER_USERNAME_EXISTS) {
-                                CommonUtils.showShortToast(R.string.User_already_exists);
+                                CommonUtils.showLongToast(R.string.User_already_exists);
                             } else {
-                                CommonUtils.showShortToast(R.string.Registration_failed);
+                                CommonUtils.showLongToast(R.string.Registration_failed);
                             }
                         }
                     } else {
                         pd.dismiss();
-                        CommonUtils.showShortToast(R.string.Registration_failed);
+                        CommonUtils.showLongToast(R.string.Registration_failed);
                     }
                 } else {
                     pd.dismiss();
-                    CommonUtils.showShortToast(R.string.Registration_failed);
+                    CommonUtils.showLongToast(R.string.Registration_failed);
                 }
+
             }
 
             @Override
             public void onError(String error) {
                 pd.dismiss();
-                CommonUtils.showShortToast(R.string.Registration_failed);
+                CommonUtils.showLongToast(R.string.Registration_failed);
             }
         });
-
     }
-
 
     private void registerEMServer() {
         new Thread(new Runnable() {
@@ -163,8 +167,8 @@ public class RegisterActivity extends BaseActivity {
                         }
                     });
                 } catch (final HyphenateException e) {
-                    //取消注册
-                    unRegisterAppServer();
+                    unRegisterAppSever();
+
                     runOnUiThread(new Runnable() {
                         public void run() {
                             if (!RegisterActivity.this.isFinishing())
@@ -185,12 +189,10 @@ public class RegisterActivity extends BaseActivity {
                     });
                 }
             }
-
-
         }).start();
     }
 
-    private void unRegisterAppServer() {
+    private void unRegisterAppSever() {
         NetDao.unregister(this, username, new OnCompleteListener<String>() {
             @Override
             public void onSuccess(String result) {
@@ -199,14 +201,14 @@ public class RegisterActivity extends BaseActivity {
 
             @Override
             public void onError(String error) {
-                L.e(TAG, "error=" + error);
-
 
             }
         });
+
     }
 
-    @OnClick({R.id.img_back, R.id.btn_register})
+
+    @OnClick({R.id.img_back, R.id.et_password, R.id.btn_register})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_back:
