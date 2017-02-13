@@ -156,7 +156,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                     @Override
                     public void onSuccess(String s) {
                         dialog.dismiss();
-                        L.e(TAG,"s="+s);
+                        L.e(TAG, "s=" + s);
                         if (s != null) {
                             Result result = ResultUtils.getResultFromJson(s, User.class);
                             if (result != null) {
@@ -185,7 +185,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
                     @Override
                     public void onError(String error) {
-                        L.e(TAG,"error="+error);
+                        L.e(TAG, "error=" + error);
                         dialog.dismiss();
                         CommonUtils.showShortToast(R.string.toast_updatenick_fail);
 
@@ -237,6 +237,9 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             case REQUESTCODE_CUTTING:
                 if (data != null) {
                     uploadAppUserAvatar(data);
+                    L.e(TAG, "><<><><><——————————————————————————"  );
+
+                    //uploadUserAvatar(data);
                 }
                 break;
             default:
@@ -280,11 +283,13 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             return;
         }
         dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo), getString(R.string.dl_waiting));
+        L.e(TAG, "s=>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" );
         NetDao.uplocadUserAvatar(this, EMClient.getInstance().getCurrentUser(), file,
                 new OnCompleteListener<String>() {
+
                     @Override
                     public void onSuccess(String s) {
-                        L.e(TAG,"s="+s);
+                        L.e(TAG, "s=...................................................." + s);
                         if (s != null) {
                             Result result = ResultUtils.getResultFromJson(s, User.class);
                             if (result != null) {
@@ -298,14 +303,18 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                                         CommonUtils.showShortToast(R.string.toast_updatephoto_success);
                                     }
                                 }
+                            } else {
+                                CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
                             }
+                        } else {
+                            CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
                         }
                         dialog.dismiss();
                     }
 
                     @Override
                     public void onError(String error) {
-                        L.e(TAG,"error="+error);
+                        L.e(TAG, "error=" + error);
                         dialog.dismiss();
                         CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
                     }
