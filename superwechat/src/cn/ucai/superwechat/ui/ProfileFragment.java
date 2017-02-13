@@ -70,10 +70,15 @@ public class ProfileFragment extends Fragment {
         String username = EMClient.getInstance().getCurrentUser();
         tvProfileUsername.setText("微信号: "+username);
         EaseUserUtils.setAppUserNick(username,tvProfileNickname);
-        EaseUserUtils.setUserAvatar(getContext(),username,ivProfileAvatar);
+        EaseUserUtils.setAppUserAvatar(getContext(),username,ivProfileAvatar);
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

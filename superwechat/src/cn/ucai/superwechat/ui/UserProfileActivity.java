@@ -21,9 +21,14 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.domain.User;
+import com.hyphenate.easeui.utils.EaseImageUtils;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,10 +41,13 @@ import cn.ucai.superwechat.net.OnCompleteListener;
 import cn.ucai.superwechat.utils.CommonUtils;
 import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.MFGT;
+import cn.ucai.superwechat.utils.PreferenceManager;
 import cn.ucai.superwechat.utils.ResultUtils;
 import cn.ucai.superwechat.widget.I;
 
 public class UserProfileActivity extends BaseActivity implements OnClickListener {
+    protected static final String TAG = "UserProfileActivity";
+
 
     private static final int REQUESTCODE_PICK = 1;
     private static final int REQUESTCODE_CUTTING = 2;
@@ -76,7 +84,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         String username = EMClient.getInstance().getCurrentUser();
         tvUserinfoName.setText("微信" + EMClient.getInstance().getCurrentUser());
         EaseUserUtils.setAppUserNick(username, tvUserinfoNick);
-        EaseUserUtils.setUserAvatar(this, username, ivUserinfoAvatar);
+        EaseUserUtils.setAppUserAvatar(this, username, ivUserinfoAvatar);
     }
 
 
@@ -99,11 +107,16 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                             }
                         }
                     }
+
+
                 }
             }
 
             @Override
             public void onError(String error) {
+                dialog.dismiss();
+                CommonUtils.showShortToast(R.string.toast_updatenick_fail);
+
 
             }
         });
@@ -137,18 +150,23 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
 
     private void updateRemoteNick(final String nickName) {
+        dialog = ProgressDialog.show(this, getString(R.string.dl_update_nick), getString(R.string.dl_waiting));
         NetDao.updataUsernick(this, EMClient.getInstance().getCurrentUser(), nickName,
                 new OnCompleteListener<String>() {
                     @Override
                     public void onSuccess(String s) {
                         dialog.dismiss();
+                        L.e(TAG,"s="+s);
                         if (s != null) {
                             Result result = ResultUtils.getResultFromJson(s, User.class);
                             if (result != null) {
                                 if (result.isRetMsg()) {
                                     User user = (User) result.getRetData();
                                     if (user != null) {
-                                        CommonUtils.showShortToast(R.string.toast_updatenick_fail);
+                                        PreferenceManager.getInstance().setCurrentUserNick(nickName);
+                                        SuperWeChatHelper.getInstance().saveAppContact(user);
+                                        tvUserinfoNick.setText(nickName);
+                                        CommonUtils.showShortToast(R.string.toast_updatenick_success);
                                     }
                                 } else {
                                     if (result.getRetCode() == I.MSG_USER_SAME_NICK) {
@@ -167,6 +185,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
                     @Override
                     public void onError(String error) {
+                        L.e(TAG,"error="+error);
                         dialog.dismiss();
                         CommonUtils.showShortToast(R.string.toast_updatenick_fail);
 
@@ -217,7 +236,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                 break;
             case REQUESTCODE_CUTTING:
                 if (data != null) {
-                    setPicToView(data);
+                    uploadAppUserAvatar(data);
                 }
                 break;
             default:
@@ -253,6 +272,63 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             uploadUserAvatar(Bitmap2Bytes(photo));
         }
 
+    }
+
+    private void uploadAppUserAvatar(Intent picdata) {
+        File file = saveBitmapFile(picdata);
+        if (file != null) {
+            return;
+        }
+        dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo), getString(R.string.dl_waiting));
+        NetDao.uplocadUserAvatar(this, EMClient.getInstance().getCurrentUser(), file,
+                new OnCompleteListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        L.e(TAG,"s="+s);
+                        if (s != null) {
+                            Result result = ResultUtils.getResultFromJson(s, User.class);
+                            if (result != null) {
+                                if (result.isRetMsg()) {
+                                    User user = (User) result.getRetData();
+                                    if (user != null) {
+                                        PreferenceManager.getInstance().setCurrentUserAvatar(user.getAvatar());
+                                        SuperWeChatHelper.getInstance().saveAppContact(user);
+                                        EaseUserUtils.setAppUserAvatar(UserProfileActivity.this,
+                                                user.getMUserName(), ivUserinfoAvatar);
+                                        CommonUtils.showShortToast(R.string.toast_updatephoto_success);
+                                    }
+                                }
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        L.e(TAG,"error="+error);
+                        dialog.dismiss();
+                        CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
+                    }
+                });
+    }
+
+    private File saveBitmapFile(Intent picdata) {
+        Bundle extras = picdata.getExtras();
+        if (extras != null) {
+            Bitmap bitmap = extras.getParcelable("data");
+            String imagePath = EaseImageUtils.getImagePath(EMClient.getInstance().getCurrentUser() + I.AVATAR_SUFFIX_JPG);
+            File file = new File(imagePath);//要保存图片的路径
+            try {
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                bos.flush();
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return file;
+        }
+        return null;
     }
 
     private void uploadUserAvatar(final byte[] data) {

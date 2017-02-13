@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.hyphenate.easeui.domain.User;
 
+import java.io.File;
+
 import cn.ucai.superwechat.utils.MD5;
 import cn.ucai.superwechat.utils.OkHttpUtils;
 import cn.ucai.superwechat.widget.I;
@@ -55,6 +57,19 @@ public class NetDao {
                 .addParam(I.User.NICK,usernick)
                 .targetClass(String.class)
                 .execute(listener);
+    }
+    public static void uplocadUserAvatar(Context context, String username, File file,
+                                         OnCompleteListener<String> listener){
+        OkHttpUtils<String> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_UPDATE_AVATAR)
+                .addParam(I.NAME_OR_HXID,username)
+                .addParam(I.AVATAR_TYPE,I.AVATAR_TYPE_USER_PATH)
+                .addFile2(file)
+                .targetClass(String.class)
+                .post()
+                .execute(listener);
+
+
     }
 
 }
