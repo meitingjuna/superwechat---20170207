@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.ui.AddContactActivity;
+import cn.ucai.superwechat.ui.AddFirentActivity;
 import cn.ucai.superwechat.ui.FirentProfileActivity;
 import cn.ucai.superwechat.ui.GuideActivity;
 import cn.ucai.superwechat.ui.LoginActivity;
@@ -77,8 +78,14 @@ public class MFGT {
 
 
     public static void gotoFirent(Activity activity, User user) {
-        startActivity(activity,new Intent(activity,FirentProfileActivity.class).putExtra(I.User.USER_NAME,user));
+        startActivity(activity,new Intent(activity,FirentProfileActivity.class)
+                .putExtra(I.User.USER_NAME,user));
 
+    }
+
+    public static void gotoAddFirent(Activity activity, String username) {
+        startActivity(activity,new Intent(activity,AddFirentActivity.class).
+        putExtra(I.User.USER_NAME,username));
     }
 }
 

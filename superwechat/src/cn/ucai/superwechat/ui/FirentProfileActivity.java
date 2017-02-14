@@ -18,7 +18,7 @@ import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.utils.MFGT;
 import cn.ucai.superwechat.widget.I;
 
-public class FirentProfileActivity extends Activity {
+public class FirentProfileActivity extends BaseActivity {
     private static final String TAG = "FirentProfileActivity";
 
 
@@ -42,7 +42,6 @@ public class FirentProfileActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firent_profile);
         ButterKnife.bind(this);
@@ -88,5 +87,9 @@ public class FirentProfileActivity extends Activity {
     @OnClick(R.id.img_back)
     public void onClick() {
         MFGT.finish(this);
+    }
+    @OnClick(R.id.btn_add_contact)
+    public void sendAddContactMsg(){
+        MFGT.gotoAddFirent(this,user.getMUserName());
     }
 }
