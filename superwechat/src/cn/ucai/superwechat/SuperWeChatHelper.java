@@ -713,50 +713,21 @@ public class SuperWeChatHelper {
         }
 
         @Override
-        public void onFriendRequestAccepted(final String username) {
+        public void onFriendRequestAccepted(String username) {
             List<InviteMessage> msgs = inviteMessgeDao.getMessagesList();
             for (InviteMessage inviteMessage : msgs) {
                 if (inviteMessage.getFrom().equals(username)) {
                     return;
                 }
             }
-
-            NetDao.getUserInfoUsername(appContext, username, new OnCompleteListener<String>() {
-                @Override
-                public void onSuccess(String s) {
-                    // save invitation as message
-                    InviteMessage msg = new InviteMessage();
-                    msg.setFrom(username);
-                    msg.setTime(System.currentTimeMillis());
-                    Log.d(TAG, username + "accept your request");
-                    msg.setStatus(InviteMessage.InviteMesageStatus.BEAGREED);
-                    L.e(TAG, "s=" + s);
-                    if (s != null) {
-                        Result result = ResultUtils.getResultFromJson(s, User.class);
-                        if (result != null) {
-                            if (result.isRetMsg()){
-                                User user = (User) result.getRetData();
-                                if (user!=null){
-                                    msg.setUsernick(user.getMUserNick());
-                                    msg.setAvatarSuffix(user.getMAvatarSuffix());
-                                    msg.setAvatarTime(user.getMAvatarLastUpdateTime());
-                                }
-                            }
-                        }
-                    }
-                    notifyNewInviteMessage(msg);
-                    broadcastManager.sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
-                }
-                @Override
-                public void onError(String error) {
-                    InviteMessage msg = new InviteMessage();
-                    msg.setFrom(username);
-                    msg.setTime(System.currentTimeMillis());
-                    Log.d(TAG, username + "accept your request");
-                    msg.setStatus(InviteMessage.InviteMesageStatus.BEAGREED);
-                }
-            });
-
+            // save invitation as message
+            InviteMessage msg = new InviteMessage();
+            msg.setFrom(username);
+            msg.setTime(System.currentTimeMillis());
+            Log.d(TAG, username + "accept your request");
+            msg.setStatus(InviteMessage.InviteMesageStatus.BEAGREED);
+            notifyNewInviteMessage(msg);
+            broadcastManager.sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
         }
 
         @Override
@@ -771,11 +742,36 @@ public class SuperWeChatHelper {
      *
      * @param msg
      */
-    private void notifyNewInviteMessage(InviteMessage msg) {
+    private void notifyNewInviteMessage(final InviteMessage msg) {
         if (inviteMessgeDao == null) {
             inviteMessgeDao = new InviteMessgeDao(appContext);
         }
-        inviteMessgeDao.saveMessage(msg);
+        NetDao.getUserInfoUsername(appContext, msg.getFrom(), new OnCompleteListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                L.e(TAG, "s=" + s);
+                if (s != null) {
+                    Result result = ResultUtils.getResultFromJson(s, User.class);
+                    if (result != null) {
+                        if (result.isRetMsg()) {
+                            User user = (User) result.getRetData();
+                            if (user != null) {
+                                msg.setUsernick(user.getMUserNick());
+                                msg.setAvatarSuffix(user.getMAvatarSuffix());
+                                msg.setAvatarTime(user.getMAvatarLastUpdateTime());
+                            }
+                        }
+                    }
+                }
+                inviteMessgeDao.saveMessage(msg);
+            }
+
+            @Override
+            public void onError(String error) {
+                inviteMessgeDao.saveMessage(msg);
+            }
+        });
+
         //increase the unread message count
         inviteMessgeDao.saveUnreadMessageCount(1);
         // notify there is new message
@@ -811,6 +807,7 @@ public class SuperWeChatHelper {
         }
         return user;
     }
+
     //////////////////
     private User getAppUserInfo(String username) {
         // To get instance of EaseUser, here we get it from the user list in memory
