@@ -40,8 +40,8 @@ public class AddFirentActivity extends BaseActivity {
     String username;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_firent);
         ButterKnife.bind(this);
         initview();
@@ -85,7 +85,6 @@ public class AddFirentActivity extends BaseActivity {
             new EaseAlertDialog(this, R.string.not_add_myself).show();
             return;
         }
-
         if (SuperWeChatHelper.getInstance().getContactList().containsKey(username)) {
             //let the user know the contact already in your contact list
             if (EMClient.getInstance().contactManager().getBlackListUsernames().contains(username)) {
