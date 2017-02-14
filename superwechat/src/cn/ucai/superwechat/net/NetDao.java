@@ -68,8 +68,6 @@ public class NetDao {
                 .targetClass(String.class)
                 .post()
                 .execute(listener);
-
-
     }
 
 }

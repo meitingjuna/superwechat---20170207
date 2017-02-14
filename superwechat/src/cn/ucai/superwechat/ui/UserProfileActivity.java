@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -46,8 +47,7 @@ import cn.ucai.superwechat.utils.ResultUtils;
 import cn.ucai.superwechat.widget.I;
 
 public class UserProfileActivity extends BaseActivity implements OnClickListener {
-    protected static final String TAG = "UserProfileActivity";
-
+    private static final String TAG = "UserProfileActivity";
 
     private static final int REQUESTCODE_PICK = 1;
     private static final int REQUESTCODE_CUTTING = 2;
@@ -61,7 +61,6 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
     TextView tvUserinfoNick;
     @BindView(R.id.tv_userinfo_name)
     TextView tvUserinfoName;
-
     private ProgressDialog dialog;
 
 
@@ -82,7 +81,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
     private void initListener() {
         String username = EMClient.getInstance().getCurrentUser();
-        tvUserinfoName.setText("微信" + EMClient.getInstance().getCurrentUser());
+        txtTitle.setText("微信号：" + username);
         EaseUserUtils.setAppUserNick(username, tvUserinfoNick);
         EaseUserUtils.setAppUserAvatar(this, username, ivUserinfoAvatar);
     }
@@ -100,23 +99,18 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                             SuperWeChatHelper.getInstance().saveAppContact(user);
                             tvUserinfoNick.setText(user.getMUserNick());
                             if (!TextUtils.isEmpty(user.getAvatar())) {
-                                Glide.with(UserProfileActivity.this).load(user.getAvatar()).placeholder
-                                        (R.drawable.default_hd_avatar).into(ivUserinfoAvatar);
+                                Glide.with(UserProfileActivity.this).load(user.getAvatar()).placeholder(R.drawable.default_hd_avatar).into(ivUserinfoAvatar);
                             } else {
                                 Glide.with(UserProfileActivity.this).load(R.drawable.default_hd_avatar).into(ivUserinfoAvatar);
                             }
                         }
                     }
 
-
                 }
             }
 
             @Override
             public void onError(String error) {
-                dialog.dismiss();
-                CommonUtils.showShortToast(R.string.toast_updatenick_fail);
-
 
             }
         });
@@ -128,6 +122,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         builder.setTitle(R.string.dl_title_upload_photo);
         builder.setItems(new String[]{getString(R.string.dl_msg_take_photo), getString(R.string.dl_msg_local_upload)},
                 new DialogInterface.OnClickListener() {
+
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         switch (which) {
@@ -151,49 +146,48 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
     private void updateRemoteNick(final String nickName) {
         dialog = ProgressDialog.show(this, getString(R.string.dl_update_nick), getString(R.string.dl_waiting));
-        NetDao.updataUsernick(this, EMClient.getInstance().getCurrentUser(), nickName,
-                new OnCompleteListener<String>() {
-                    @Override
-                    public void onSuccess(String s) {
-                        dialog.dismiss();
-                        L.e(TAG, "s=" + s);
-                        if (s != null) {
-                            Result result = ResultUtils.getResultFromJson(s, User.class);
-                            if (result != null) {
-                                if (result.isRetMsg()) {
-                                    User user = (User) result.getRetData();
-                                    if (user != null) {
-                                        PreferenceManager.getInstance().setCurrentUserNick(nickName);
-                                        SuperWeChatHelper.getInstance().saveAppContact(user);
-                                        tvUserinfoNick.setText(nickName);
-                                        CommonUtils.showShortToast(R.string.toast_updatenick_success);
-                                    }
-                                } else {
-                                    if (result.getRetCode() == I.MSG_USER_SAME_NICK) {
-                                        CommonUtils.showShortToast("昵称未修改");
-                                    } else {
-                                        CommonUtils.showShortToast(R.string.toast_updatenick_fail);
-                                    }
-                                }
-                            } else {
-                                CommonUtils.showShortToast(R.string.toast_updatenick_fail);
+        NetDao.updataUsernick(this, EMClient.getInstance().getCurrentUser(), nickName, new OnCompleteListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                dialog.dismiss();
+                if (s != null) {
+                    Result result = ResultUtils.getResultFromJson(s, User.class);
+                    if (result != null) {
+                        if (result.isRetMsg()) {
+                            User user = (User) result.getRetData();
+                            if (user != null) {
+                                L.e(TAG, "user=" + user);
+                                PreferenceManager.getInstance().setCurrentUserNick(nickName);
+                                SuperWeChatHelper.getInstance().saveAppContact(user);
+                                tvUserinfoNick.setText(nickName);
+                                L.e(TAG, "nick=" + nickName);
+                                CommonUtils.showShortToast(R.string.toast_updatenick_success);
                             }
                         } else {
-                            CommonUtils.showShortToast(R.string.toast_updatenick_fail);
+                            if (result.getRetCode() == I.MSG_USER_SAME_NICK) {
+                                CommonUtils.showShortToast("昵称未修改");
+                            } else {
+                                CommonUtils.showLongToast(R.string.toast_updatenick_fail);
+                            }
                         }
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        L.e(TAG, "error=" + error);
-                        dialog.dismiss();
+                    } else {
                         CommonUtils.showShortToast(R.string.toast_updatenick_fail);
-
                     }
-                });
+                } else {
+                    CommonUtils.showShortToast(R.string.toast_updatenick_fail);
+                }
 
+            }
 
-//        dialog = ProgressDialog.show(this, getString(R.string.dl_update_nick), getString(R.string.dl_waiting));
+            @Override
+            public void onError(String error) {
+                dialog.dismiss();
+                CommonUtils.showShortToast(R.string.toast_updatenick_fail);
+
+            }
+        });
+
+        //    dialog = ProgressDialog.show(this, getString(R.string.dl_update_nick), getString(R.string.dl_waiting));
 //        new Thread(new Runnable() {
 //
 //            @Override
@@ -237,9 +231,6 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             case REQUESTCODE_CUTTING:
                 if (data != null) {
                     uploadAppUserAvatar(data);
-                    L.e(TAG, "><<><><><——————————————————————————"  );
-
-                    //uploadUserAvatar(data);
                 }
                 break;
             default:
@@ -279,46 +270,41 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
     private void uploadAppUserAvatar(Intent picdata) {
         File file = saveBitmapFile(picdata);
-        if (file != null) {
+        L.e(TAG, "file=" + file);
+        if (file == null) {
             return;
         }
         dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo), getString(R.string.dl_waiting));
-        L.e(TAG, "s=>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" );
-        NetDao.uplocadUserAvatar(this, EMClient.getInstance().getCurrentUser(), file,
-                new OnCompleteListener<String>() {
-
-                    @Override
-                    public void onSuccess(String s) {
-                        L.e(TAG, "s=...................................................." + s);
-                        if (s != null) {
-                            Result result = ResultUtils.getResultFromJson(s, User.class);
-                            if (result != null) {
-                                if (result.isRetMsg()) {
-                                    User user = (User) result.getRetData();
-                                    if (user != null) {
-                                        PreferenceManager.getInstance().setCurrentUserAvatar(user.getAvatar());
-                                        SuperWeChatHelper.getInstance().saveAppContact(user);
-                                        EaseUserUtils.setAppUserAvatar(UserProfileActivity.this,
-                                                user.getMUserName(), ivUserinfoAvatar);
-                                        CommonUtils.showShortToast(R.string.toast_updatephoto_success);
-                                    }
-                                }
-                            } else {
-                                CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
+        NetDao.uplocadUserAvatar(this, EMClient.getInstance().getCurrentUser(), file, new OnCompleteListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                L.e(TAG, "s=" + s);
+                if (s != null) {
+                    Result result = ResultUtils.getListResultFromJson(s, User.class);
+                    if (result != null) {
+                        if (result.isRetMsg()) {
+                            User user = (User) result.getRetData();
+                            if (user != null) {
+                                PreferenceManager.getInstance().setCurrentUserAvatar(user.getAvatar());
+                                SuperWeChatHelper.getInstance().saveAppContact(user);
+                                EaseUserUtils.setAppUserAvatar(UserProfileActivity.this,
+                                        user.getMUserName(), ivUserinfoAvatar);
+                                CommonUtils.showShortToast(R.string.toast_updatephoto_success);
                             }
-                        } else {
-                            CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
                         }
-                        dialog.dismiss();
                     }
+                }
+                dialog.dismiss();
+            }
 
-                    @Override
-                    public void onError(String error) {
-                        L.e(TAG, "error=" + error);
-                        dialog.dismiss();
-                        CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
-                    }
-                });
+            @Override
+            public void onError(String error) {
+                L.e(TAG, "error=" + error);
+                dialog.dismiss();
+                CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
+            }
+        });
+
     }
 
     private File saveBitmapFile(Intent picdata) {
@@ -326,9 +312,11 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         if (extras != null) {
             Bitmap bitmap = extras.getParcelable("data");
             String imagePath = EaseImageUtils.getImagePath(EMClient.getInstance().getCurrentUser() + I.AVATAR_SUFFIX_JPG);
-            File file = new File(imagePath);//要保存图片的路径
+            File file = new File(imagePath);
+            L.e("file path=" + file.getAbsolutePath());
+            BufferedOutputStream bos = null;
             try {
-                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+                bos = new BufferedOutputStream(new FileOutputStream(file));
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                 bos.flush();
                 bos.close();
@@ -339,6 +327,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         }
         return null;
     }
+
 
     private void uploadUserAvatar(final byte[] data) {
         dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo), getString(R.string.dl_waiting));
@@ -388,6 +377,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                 final EditText editText = new EditText(this);
                 new Builder(this).setTitle(R.string.setting_nickname).setIcon(android.R.drawable.ic_dialog_info).setView(editText)
                         .setPositiveButton(R.string.dl_ok, new DialogInterface.OnClickListener() {
+
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String nickString = editText.getText().toString();
