@@ -17,33 +17,31 @@ import android.widget.RelativeLayout;
 import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.adapter.EaseContactAdapter;
 import com.hyphenate.easeui.domain.EaseUser;
+import com.hyphenate.easeui.domain.User;
 
 public class EaseContactList extends RelativeLayout {
     protected static final String TAG = EaseContactList.class.getSimpleName();
-    
+    static final int MSG_UPDATE_LIST = 0;
     protected Context context;
     protected ListView listView;
     protected EaseContactAdapter adapter;
-    protected List<EaseUser> contactList;
+    protected List<User> contactList;
     protected EaseSidebar sidebar;
-    
     protected int primaryColor;
     protected int primarySize;
     protected boolean showSiderBar;
     protected Drawable initialLetterBg;
-    
-    static final int MSG_UPDATE_LIST = 0;
-    
+    protected int initialLetterColor;
     Handler handler = new Handler() {
-        
+
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case MSG_UPDATE_LIST:
                 if(adapter != null){
                 	adapter.clear();
-                	adapter.addAll(new ArrayList<EaseUser>(contactList));
-                	adapter.notifyDataSetChanged();	
+                	adapter.addAll(new ArrayList<User>(contactList));
+                	adapter.notifyDataSetChanged();
                 }
                 break;
             default:
@@ -52,8 +50,6 @@ public class EaseContactList extends RelativeLayout {
             super.handleMessage(msg);
         }
     };
-
-    protected int initialLetterColor;
 
     
     public EaseContactList(Context context) {
@@ -92,9 +88,9 @@ public class EaseContactList extends RelativeLayout {
     /*
      * init view
      */
-    public void init(List<EaseUser> contactList){
+    public void init(List<User> contactList){
     	this.contactList = contactList;
-        adapter = new EaseContactAdapter(context, 0, new ArrayList<EaseUser>(contactList));
+        adapter = new EaseContactAdapter(context, 0, new ArrayList<User>(contactList));
         adapter.setPrimaryColor(primaryColor).setPrimarySize(primarySize).setInitialLetterBg(initialLetterBg)
             .setInitialLetterColor(initialLetterColor);
         listView.setAdapter(adapter);
