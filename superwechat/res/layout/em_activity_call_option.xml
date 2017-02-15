@@ -20,6 +20,8 @@
             android:layout_centerInParent="true"
             android:text="@string/call_option"
             android:textColor="#fff"
+
+
             android:textSize="18sp" />
     </RelativeLayout>
 
@@ -41,14 +43,14 @@
             android:typeface="serif" />
 
         <EditText
+            android:id="@+id/edit_min_bit_rate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="80dp"
-            android:id="@+id/edit_min_bit_rate"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:textSize="10sp"
-            android:text="Not set"/>
+            android:minWidth="80dp"
+            android:text="Not set"
+            android:textSize="10sp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -69,14 +71,14 @@
             android:typeface="serif" />
 
         <EditText
+            android:id="@+id/edit_max_bit_rate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="80dp"
-            android:id="@+id/edit_max_bit_rate"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:textSize="10sp"
-            android:text="Not set"/>
+            android:minWidth="80dp"
+            android:text="Not set"
+            android:textSize="10sp"/>
     </RelativeLayout>
 
 
@@ -98,14 +100,14 @@
             android:typeface="serif" />
 
         <EditText
+            android:id="@+id/edit_max_frame_rate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="80dp"
-            android:id="@+id/edit_max_frame_rate"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:textSize="10sp"
-            android:text="Not set"/>
+            android:minWidth="80dp"
+            android:text="Not set"
+            android:textSize="10sp"/>
     </RelativeLayout>
 
     <View
@@ -121,8 +123,8 @@
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="audio sample rate"
             android:layout_gravity="center"
+            android:text="audio sample rate"
             android:textAlignment="center"/>
 
         <Spinner
@@ -145,12 +147,12 @@
             android:background="@color/btn_gray_normal" />
 
         <TextView
+            android:id="@+id/text_video_resolution"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/text_video_resolution"
-            android:paddingTop="10dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
+            android:paddingTop="10dp"
             android:text="Not Set Video resolution"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
@@ -162,8 +164,8 @@
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="back camera"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:text="back camera"/>
 
             <Spinner
                 android:id="@+id/spinner_video_resolution_back"
@@ -180,8 +182,8 @@
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="front camera"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:text="front camera"/>
 
             <Spinner
                 android:id="@+id/spinner_video_resolution_front"
@@ -221,9 +223,9 @@
                 android:typeface="serif" />
 
             <com.hyphenate.easeui.widget.EaseSwitchButton
+                android:id="@+id/switch_fix_video_resolution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/switch_fix_video_resolution"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true" />
         </RelativeLayout>
@@ -253,9 +255,9 @@
                 android:typeface="serif" />
 
             <com.hyphenate.easeui.widget.EaseSwitchButton
+                android:id="@+id/switch_offline_call_push"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/switch_offline_call_push"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true" />
         </RelativeLayout>
