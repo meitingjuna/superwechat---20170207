@@ -210,8 +210,9 @@ public class EaseContactAdapter extends ArrayAdapter<User> implements SectionInd
                 for(int i=0;i<count;i++){
                     final User user = mOriginalList.get(i);
                     String username = user.getMUserName();
+                    String userNick= user.getMUserNick();
 
-                    if(username.startsWith(prefixString)){
+                    if(username.contains(prefixString)||userNick.contains(prefixString)){
                         newValues.add(user);
                     }
                     else{
