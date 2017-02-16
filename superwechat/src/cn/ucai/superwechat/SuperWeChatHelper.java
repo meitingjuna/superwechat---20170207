@@ -1396,10 +1396,13 @@ public class SuperWeChatHelper {
 
         @Override
         public void onContactDeleted(String username) {
+            L.e(TAG,"onContactDeleted....username="+username);
             Map<String, EaseUser> localUsers = SuperWeChatHelper.getInstance().getContactList();
             localUsers.remove(username);
             userDao.deleteContact(username);
             inviteMessgeDao.deleteMessage(username);
+            SuperWeChatHelper.getInstance().getAppContactList().remove(username);
+            userDao.deleteAppContact(username);
 
             broadcastManager.sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
         }
