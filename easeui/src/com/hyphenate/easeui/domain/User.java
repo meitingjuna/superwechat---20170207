@@ -5,6 +5,10 @@ import com.hyphenate.easeui.utils.EaseCommonUtils;
 import java.io.Serializable;
 
 public class User implements Serializable {
+	/**
+	 * initial letter for nickname
+	 */
+	protected String initialLetter;
 	private String muserName;
 	private String muserNick;
 	private Integer mavatarId;
@@ -12,11 +16,6 @@ public class User implements Serializable {
 	private String mavatarSuffix;
 	private Integer mavatarType;
 	private String mavatarLastUpdateTime;
-
-	/**
-	 * initial letter for nickname
-	 */
-	protected String initialLetter;
 	
 	public User() {
 		super();
@@ -79,19 +78,20 @@ public class User implements Serializable {
 	}
 
 	public String getMAvatarLastUpdateTime() {
-		return mavatarLastUpdateTime;
+		return mavatarLastUpdateTime==null?
+				String.valueOf(System.currentTimeMillis()):mavatarLastUpdateTime;
 	}
 
 	public void setMAvatarLastUpdateTime(String mavatarLastUpdateTime) {
 		this.mavatarLastUpdateTime = mavatarLastUpdateTime;
 	}
 	
-	public void setMAvatarSuffix(String mavatarSuffix) {
-		this.mavatarSuffix = mavatarSuffix;
-	}
-
 	public String getMAvatarSuffix() {
 		return mavatarSuffix==null?".jpg":mavatarSuffix;
+	}
+
+	public void setMAvatarSuffix(String mavatarSuffix) {
+		this.mavatarSuffix = mavatarSuffix;
 	}
 
 //	public String getInitialLetter() {
@@ -104,7 +104,6 @@ public class User implements Serializable {
 //	public void setInitialLetter(String initialLetter) {
 //		this.initialLetter = initialLetter;
 //	}
-
 
 	@Override
 	public String toString() {
