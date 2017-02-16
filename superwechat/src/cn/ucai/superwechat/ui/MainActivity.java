@@ -77,11 +77,11 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
     DMTabHost layoutTabhost;
     MainTabAdpter adapter;
     TitlePopup mTitlePopup;
-    TitlePopup.OnItemOnClickListener listener = new TitlePopup.OnItemOnClickListener(){
+    TitlePopup.OnItemOnClickListener listener = new TitlePopup.OnItemOnClickListener() {
         @Override
         public void onItemClick(ActionItem item, int position) {
-           L.e(TAG,"item="+item+"Position="+position);
-            switch (position){
+            L.e(TAG, "item=" + item + "Position=" + position);
+            switch (position) {
                 case 1:
                     MFGT.gotoAddContact(MainActivity.this);
                     break;
@@ -187,8 +187,8 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
         conversationListFragment = new ConversationListFragment();
         contactListFragment = new ContactListFragment();
         //SettingsActivity settingFragment = new SettingsActivity();
-       ProfileFragment profileFragment = new ProfileFragment();
-       // fragments = new Fragment[]{conversationListFragment, contactListFragment, settingFragment};
+        ProfileFragment profileFragment = new ProfileFragment();
+        // fragments = new Fragment[]{conversationListFragment, contactListFragment, settingFragment};
 
 
         adapter = new MainTabAdpter(getSupportFragmentManager());
@@ -269,10 +269,10 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
         imgRight.setVisibility(View.VISIBLE);
         mTitlePopup = new TitlePopup(this, ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        mTitlePopup.addAction(new ActionItem(this,R.string.menu_groupchat,R.drawable.icon_menu_group));
-        mTitlePopup.addAction(new ActionItem(this,R.string.menu_addfriend,R.drawable.icon_menu_addfriend));
-        mTitlePopup.addAction(new ActionItem(this,R.string.menu_qrcode,R.drawable.icon_menu_sao));
-        mTitlePopup.addAction(new ActionItem(this,R.string.menu_money,R.drawable.icon_menu_money));
+        mTitlePopup.addAction(new ActionItem(this, R.string.menu_groupchat, R.drawable.icon_menu_group));
+        mTitlePopup.addAction(new ActionItem(this, R.string.menu_addfriend, R.drawable.icon_menu_addfriend));
+        mTitlePopup.addAction(new ActionItem(this, R.string.menu_qrcode, R.drawable.icon_menu_sao));
+        mTitlePopup.addAction(new ActionItem(this, R.string.menu_money, R.drawable.icon_menu_money));
         mTitlePopup.setItemOnClickListener(listener);
 
     }
@@ -342,15 +342,13 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
             public void onReceive(Context context, Intent intent) {
                 updateUnreadLabel();
                 updateUnreadAddressLable();
-                if (currentTabIndex == 0) {
                     // refresh conversation list
                     if (conversationListFragment != null) {
                         conversationListFragment.refresh();
                     }
-                } else if (currentTabIndex == 1) {
                     if (contactListFragment != null) {
                         contactListFragment.refresh();
-                    }
+
                 }
                 String action = intent.getAction();
                 if (action.equals(Constant.ACTION_GROUP_CHANAGED)) {
@@ -394,7 +392,7 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
 
     @Override
     public void onCheckedChange(int checkedPosition, boolean byUser) {
-        layoutViewpage.setCurrentItem(checkedPosition,false);
+        layoutViewpage.setCurrentItem(checkedPosition, false);
     }
 
     private void unregisterBroadcastReceiver() {
@@ -411,7 +409,6 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
             isExceptionDialogShow = false;
         }
         unregisterBroadcastReceiver();
-
         try {
             unregisterReceiver(internalDebugReceiver);
         } catch (Exception e) {
@@ -423,12 +420,12 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
      * 刷新绘画的角标
      */
     public void updateUnreadLabel() {
-//        int count = getUnreadMsgCountTotal();
-//        if (count > 0) {
-//            unreadLabel.setText(String.valueOf(count));
-//            unreadLabel.setVisibility(View.VISIBLE);
+        int count = getUnreadMsgCountTotal();
+        L.e(TAG, "updateUnreadLabel,count=" + count);
+       // if (count > 0) {
+            layoutTabhost.setUnreadCount(0, count);
 //        } else {
-//            unreadLabel.setVisibility(View.INVISIBLE);
+//            layoutTabhost.setHasNew(0, false);
 //        }
     }
 
@@ -441,10 +438,10 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
                 int count = getUnreadAddressCountTotal();
                 if (count > 1) {
                     layoutTabhost.setUnreadCount(1, count);
-                }else if (count==1){
-                    layoutTabhost.setHasNew(1,true);
+                } else if (count == 1) {
+                    layoutTabhost.setHasNew(1, true);
                 } else {
-                    layoutTabhost.setHasNew(1,false);
+                    layoutTabhost.setHasNew(1, false);
                 }
             }
         });
@@ -583,8 +580,8 @@ public class MainActivity extends BaseActivity implements DMTabHost.OnCheckedCha
         super.onNewIntent(intent);
         showExceptionDialogFromIntent(intent);
 
-        boolean isChat = intent.getBooleanExtra(I.BACK_MAIN_FROM_CHAT,false);
-        if (isChat){
+        boolean isChat = intent.getBooleanExtra(I.BACK_MAIN_FROM_CHAT, false);
+        if (isChat) {
             layoutTabhost.setChecked(0);
         }
     }

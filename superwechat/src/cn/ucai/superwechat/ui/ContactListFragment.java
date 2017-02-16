@@ -18,6 +18,7 @@ import java.util.Map;
 
 import com.hyphenate.chat.EMClient;
 
+import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.SuperWeChatHelper.DataSyncListener;
 import cn.ucai.superwechat.R;
@@ -187,7 +188,7 @@ public class ContactListFragment extends EaseContactListFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        L.e(TAG,"ContactListFragment,onContextItemSelected,item.getItemId()="+item.getItemId());
+        L.e(TAG, "ContactListFragment,onContextItemSelected,item.getItemId()=" + item.getItemId());
         if (item.getItemId() == R.id.delete_contact) {
             try {
                 // delete contact
@@ -233,6 +234,7 @@ public class ContactListFragment extends EaseContactListFragment {
                                         contactListLayout.refresh();
                                     }
                                 });
+                                getActivity().sendBroadcast(new Intent(Constant.ACTION_CONTACT_CHANAGED));
                             }
                         }
                     }
