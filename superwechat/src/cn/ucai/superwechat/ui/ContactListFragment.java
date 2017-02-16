@@ -48,7 +48,6 @@ import android.widget.Toast;
 
 /**
  * contact list
- *
  */
 public class ContactListFragment extends EaseContactListFragment {
 
@@ -123,7 +122,7 @@ public class ContactListFragment extends EaseContactListFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User user = (User) listView.getItemAtPosition(position);
                 if (user != null) {
-                    MFGT.gotoFirent(getActivity(),user);
+                    MFGT.gotoFirent(getActivity(), user);
                     // demo中直接进入聊天页面，实际一般是进入用户详情页
 
                 }
@@ -195,16 +194,11 @@ public class ContactListFragment extends EaseContactListFragment {
                 e.printStackTrace();
             }
             return true;
-        } else if (item.getItemId() == R.id.add_to_blacklist) {
-            moveToBlacklist(toBeProcessUsername);
-            return true;
         }
         return super.onContextItemSelected(item);
     }
 
     /**
-     * delete contact
-     *
      * @param
      */
     public void deleteContact(final User tobeDeleteUser) {

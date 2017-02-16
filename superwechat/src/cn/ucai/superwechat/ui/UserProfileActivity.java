@@ -274,12 +274,11 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         if (file == null) {
             return;
         }
-        dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo), getString(R.string.dl_waiting));
-        NetDao.uplocadUserAvatar(this, EMClient.getInstance().getCurrentUser(), file, new OnCompleteListener<String>() {
+        dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo),getString(R.string.dl_waiting));
+        NetDao.uplocadUserAvatar(this,EMClient.getInstance().getCurrentUser(),file, new OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
-                L.e(TAG, "s=" + s);
-                if (s != null) {
+                if(s!=null){
                     Result result = ResultUtils.getListResultFromJson(s, User.class);
                     if (result != null) {
                         if (result.isRetMsg()) {
@@ -287,8 +286,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                             if (user != null) {
                                 PreferenceManager.getInstance().setCurrentUserAvatar(user.getAvatar());
                                 SuperWeChatHelper.getInstance().saveAppContact(user);
-                                EaseUserUtils.setAppUserAvatar(UserProfileActivity.this,
-                                        user.getMUserName(), ivUserinfoAvatar);
+                                EaseUserUtils.setAppUserAvatar(UserProfileActivity.this,user.getMUserName(),ivUserinfoAvatar);
                                 CommonUtils.showShortToast(R.string.toast_updatephoto_success);
                             }
                         }
@@ -299,7 +297,6 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 
             @Override
             public void onError(String error) {
-                L.e(TAG, "error=" + error);
                 dialog.dismiss();
                 CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
             }
@@ -327,6 +324,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         }
         return null;
     }
+
 
 
     private void uploadUserAvatar(final byte[] data) {
