@@ -41,6 +41,7 @@ public class NetDao {
                 .targetClass(String.class)
                 .execute(listener);
     }
+    //
     public static void getUserInfoUsername(Context context, String username, OnCompleteListener<String> listener) {
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_FIND_USER)
@@ -49,6 +50,7 @@ public class NetDao {
                 .execute(listener);
 
     }
+    //更改昵称
     public static void updataUsernick(Context context,String username,String usernick,
                                       OnCompleteListener<String> listener){
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
@@ -58,6 +60,7 @@ public class NetDao {
                 .targetClass(String.class)
                 .execute(listener);
     }
+    //更改头像
     public static void uplocadUserAvatar(Context context, String username, File file,
                                          OnCompleteListener<String> listener){
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
@@ -69,6 +72,7 @@ public class NetDao {
                 .post()
                 .execute(listener);
     }
+    //添加好友
     public static void addContact(Context context,String username,String cname,
                                   OnCompleteListener<String> listener){
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
@@ -78,10 +82,20 @@ public class NetDao {
                 .targetClass(String.class)
                 .execute(listener);
     }
+    //获取好友信息
     public static void loadContact(Context context,String username,OnCompleteListener<String> listener){
         OkHttpUtils<String> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_DOWNLOAD_CONTACT_ALL_LIST)
                 .addParam(I.Contact.USER_NAME,username)
+                .targetClass(String.class)
+                .execute(listener);
+    }
+    //删除联系人
+    public static void removeContact(Context context,String username,String cname,OnCompleteListener<String> listener){
+        OkHttpUtils<String> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_DELETE_CONTACT)
+                .addParam(I.Contact.USER_NAME,username)
+                .addParam(I.Contact.CU_NAME,cname)
                 .targetClass(String.class)
                 .execute(listener);
     }
