@@ -21,6 +21,7 @@ import cn.ucai.superwechat.ui.RegisterActivity;
 import cn.ucai.superwechat.ui.SettingsActivity;
 import cn.ucai.superwechat.ui.SplashActivity;
 import cn.ucai.superwechat.ui.UserProfileActivity;
+import cn.ucai.superwechat.ui.VideoCallActivity;
 import cn.ucai.superwechat.widget.I;
 
 
@@ -103,6 +104,7 @@ public class MFGT {
         startActivity(activity,new Intent(activity, MainActivity.class).
                 putExtra(I.BACK_MAIN_FROM_CHAT,true));
     }
+
 }
 
 
