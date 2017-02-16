@@ -994,7 +994,7 @@ public class SuperWeChatHelper {
                                         Map<String, User> userlist = new HashMap<String, User>();
                                         for (User u : list) {
                                             EaseCommonUtils.setAppUserInitialLetter(u);
-                                            userlist.put(username, u);
+                                            userlist.put(u.getMUserName(), u);
                                         }
                                         // save the contact list to cache
                                         getAppContactList().clear();
