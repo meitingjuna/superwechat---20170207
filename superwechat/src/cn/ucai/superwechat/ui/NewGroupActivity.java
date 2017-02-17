@@ -49,6 +49,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -167,7 +168,7 @@ public class NewGroupActivity extends BaseActivity {
                     }
                     EMGroup group = EMClient.getInstance().groupManager().createGroup(groupName, desc, members, reason, option);
                     String hxid = group.getGroupId();
-                    createApopGroup(group);
+                    createApopGroup(group,members);
                 } catch (final HyphenateException e) {
                     runOnUiThread(new Runnable() {
                         public void run() {
@@ -181,7 +182,7 @@ public class NewGroupActivity extends BaseActivity {
 
     }
 
-    private void createApopGroup(EMGroup group) {
+    private void createApopGroup(final EMGroup group, final String[] members) {
         NetDao.creatGroup(this, group, file, new OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
@@ -190,7 +191,11 @@ public class NewGroupActivity extends BaseActivity {
                     Result result = ResultUtils.getResultFromJson(s, Group.class);
                     if (result != null) {
                         if (result.isRetMsg()) {
-                            createGroupSuccess();
+                            if (members != null && group.getMemberCount() > 1) {
+                                addgroupMemberCount(group.getGroupId(), members);
+                            } else {
+                                createGroupSuccess();
+                            }
                         } else {
                             progressDialog.dismiss();
                             if (result.getRetCode() == I.MSG_GROUP_HXID_EXISTS) {
@@ -213,6 +218,47 @@ public class NewGroupActivity extends BaseActivity {
             }
         });
     }
+
+    private void addgroupMemberCount(String hxid, String[] members) {
+        NetDao.addGroupMembers(this, getGroupMemebers(members),hxid, new OnCompleteListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                L.e("addgroupMemberCount", "s=" + s);
+                boolean success = false;
+                if (s != null) {
+                    Result result = ResultUtils.getResultFromJson(s, Group.class);
+                    if (result != null && result.isRetMsg()) {
+                        createGroupSuccess();
+                        success = true;
+                    }
+                }
+                if (!success) {
+                    progressDialog.dismiss();
+                    CommonUtils.showShortToast(R.string.Failed_to_create_groups);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                progressDialog.dismiss();
+                L.e("", "error=" + error);
+                CommonUtils.showShortToast(R.string.Failed_to_create_groups);
+            }
+        });
+    }
+
+
+    private String getGroupMemebers(String[] members) {
+        String memberStr = "";
+        if (members.length > 0) {
+            for (String s : members) {
+                memberStr += s + ",";
+            }
+        }
+        L.e("getGroupMemebers", "getGroupMemeber,s=" + memberStr);
+        return memberStr;
+    }
+
 
     private void createGroupSuccess() {
         runOnUiThread(new Runnable() {
@@ -273,7 +319,7 @@ public class NewGroupActivity extends BaseActivity {
         Bundle extras = picdata.getExtras();
         if (extras != null) {
             Bitmap bitmap = extras.getParcelable("data");
-            Drawable drawable = new BitmapDrawable(getResources(),bitmap);
+            Drawable drawable = new BitmapDrawable(getResources(), bitmap);
             ivAvatar.setImageDrawable(drawable);
             String imagePath = EaseImageUtils.getImagePath(EMClient.getInstance().getCurrentUser() + I.AVATAR_SUFFIX_JPG);
             file = new File(imagePath);
