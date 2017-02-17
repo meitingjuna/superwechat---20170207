@@ -155,8 +155,8 @@ public class UserProfileManager {
             @Override
             public void onSuccess(EaseUser value) {
                 if (value != null) {
-                   // setCurrentUserNick(value.getNick());
-                    //setCurrentUserAvatar(value.getAvatar());
+                    setCurrentUserNick(value.getNick());
+                    setCurrentUserAvatar(value.getAvatar());
                 }
             }
 
