@@ -18,6 +18,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -83,12 +85,6 @@ public class NewGroupActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.em_activity_new_group);
         ButterKnife.bind(this);
-        groupNameEditText = (EditText) findViewById(R.id.edit_group_name);
-        introductionEditText = (EditText) findViewById(R.id.edit_group_introduction);
-        publibCheckBox = (CheckBox) findViewById(R.id.cb_public);
-        memberCheckbox = (CheckBox) findViewById(R.id.cb_member_inviter);
-        secondTextView = (TextView) findViewById(R.id.second_desc);
-
         publibCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
             @Override
@@ -111,7 +107,8 @@ public class NewGroupActivity extends BaseActivity {
             new EaseAlertDialog(this, R.string.Group_name_cannot_be_empty).show();
         } else {
             // select from contact list
-            startActivityForResult(new Intent(this, GroupPickContactsActivity.class).putExtra("groupName", name), 0);
+            startActivityForResult(new Intent(this, GroupPickContactsActivity.class)
+                    .putExtra("groupName", name), I.REQUESTCODE_MEMBER);
         }
     }
 
@@ -138,8 +135,6 @@ public class NewGroupActivity extends BaseActivity {
                     break;
             }
             super.onActivityResult(requestCode, resultCode, data);
-
-
         }
     }
 
@@ -187,7 +182,6 @@ public class NewGroupActivity extends BaseActivity {
     }
 
     private void createApopGroup(EMGroup group) {
-
         NetDao.creatGroup(this, group, file, new OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
@@ -235,7 +229,7 @@ public class NewGroupActivity extends BaseActivity {
     }
 
     @OnClick(R.id.layout_group_icon)
-    private void uploadHeadPhoto() {
+    public void uploadHeadPhoto() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.dl_title_upload_photo);
         builder.setItems(new String[]{getString(R.string.dl_msg_take_photo), getString(R.string.dl_msg_local_upload)},
@@ -262,6 +256,7 @@ public class NewGroupActivity extends BaseActivity {
     }
 
     public void startPhotoZoom(Uri uri) {
+
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         intent.putExtra("crop", true);
@@ -278,6 +273,8 @@ public class NewGroupActivity extends BaseActivity {
         Bundle extras = picdata.getExtras();
         if (extras != null) {
             Bitmap bitmap = extras.getParcelable("data");
+            Drawable drawable = new BitmapDrawable(getResources(),bitmap);
+            ivAvatar.setImageDrawable(drawable);
             String imagePath = EaseImageUtils.getImagePath(EMClient.getInstance().getCurrentUser() + I.AVATAR_SUFFIX_JPG);
             file = new File(imagePath);
             L.e("file path=" + file.getAbsolutePath());
