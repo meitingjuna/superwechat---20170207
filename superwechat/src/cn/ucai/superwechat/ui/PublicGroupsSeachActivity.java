@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,13 +15,16 @@ import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMGroup;
 import cn.ucai.superwechat.R;
+
+import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.exceptions.HyphenateException;
 
 public class PublicGroupsSeachActivity extends BaseActivity{
+    public static EMGroup searchedGroup;
     private RelativeLayout containerLayout;
     private EditText idET;
     private TextView nameText;
-    public static EMGroup searchedGroup;
+    private ImageView avatar;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -30,7 +34,7 @@ public class PublicGroupsSeachActivity extends BaseActivity{
         containerLayout = (RelativeLayout) findViewById(R.id.rl_searched_group);
         idET = (EditText) findViewById(R.id.et_search_id);
         nameText = (TextView) findViewById(R.id.name);
-        
+        avatar= (ImageView) findViewById(R.id.avatar);
         searchedGroup = null;
     }
     
@@ -58,6 +62,7 @@ public class PublicGroupsSeachActivity extends BaseActivity{
                             pd.dismiss();
                             containerLayout.setVisibility(View.VISIBLE);
                             nameText.setText(searchedGroup.getGroupName());
+                            EaseUserUtils.setAppGroupAvatar(PublicGroupsSeachActivity.this,searchedGroup.getGroupId(),avatar);
                         }
                     });
                     
