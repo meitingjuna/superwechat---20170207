@@ -45,6 +45,7 @@ import com.hyphenate.chat.EMPushConfigs;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.net.NetDao;
 import cn.ucai.superwechat.net.OnCompleteListener;
+import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.MFGT;
 
 import com.hyphenate.easeui.utils.EaseUserUtils;
@@ -391,6 +392,17 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
         }).start();
     }
 
+    private String getGroupMemebers(String[] members) {
+        String memberStr = "";
+        if (members.length > 0) {
+            for (String s : members) {
+                memberStr += s + ",";
+            }
+        }
+        L.e("getGroupMemebers", "getGroupMemeber,s=" + memberStr);
+        return memberStr;
+    }
+
     /**
      * 增加群成员
      *
@@ -398,6 +410,7 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
      */
     private void addMembersToGroup(final String[] newmembers) {
         final String st6 = getResources().getString(R.string.Add_group_members_fail);
+
         new Thread(new Runnable() {
 
             public void run() {
@@ -417,6 +430,19 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
                             progressDialog.dismiss();
                         }
                     });
+                    NetDao.addGroupMembers(GroupDetailsActivity.this, getGroupMemebers(newmembers), groupId,
+                            new OnCompleteListener<String>() {
+                                @Override
+                                public void onSuccess(String s) {
+                                    Log.e("GroupDetailsActivity", "s=" + s);
+                                }
+
+                                @Override
+                                public void onError(String error) {
+
+                                }
+                            });
+
                 } catch (final Exception e) {
                     runOnUiThread(new Runnable() {
                         public void run() {
