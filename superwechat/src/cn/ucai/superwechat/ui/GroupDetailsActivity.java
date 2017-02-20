@@ -216,6 +216,18 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
                     if (!TextUtils.isEmpty(returnData)) {
                         progressDialog.setMessage(st5);
                         progressDialog.show();
+                        NetDao.updateGroupName(GroupDetailsActivity.this, groupId, returnData, new OnCompleteListener<String>() {
+                            @Override
+                            public void onSuccess(String s) {
+                                Log.e("GroupDetailsActivity", "updateGroupName,s=" + s);
+
+                            }
+
+                            @Override
+                            public void onError(String error) {
+
+                            }
+                        });
 
                         new Thread(new Runnable() {
                             public void run() {
@@ -328,7 +340,7 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
                 new OnCompleteListener<String>() {
                     @Override
                     public void onSuccess(String s) {
-                        Log.e("GroupDetailsActivity", "s=" + s);
+                        Log.e("GroupDetailsActivity", "removeGroupMember,s=" + s);
 
                     }
 
