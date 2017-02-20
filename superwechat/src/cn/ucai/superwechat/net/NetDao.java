@@ -1,6 +1,7 @@
 package cn.ucai.superwechat.net;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 
 import com.hyphenate.chat.EMGroup;
 import com.hyphenate.easeui.domain.User;
@@ -120,6 +121,15 @@ public class NetDao {
         utils.setRequestUrl(I.REQUEST_ADD_GROUP_MEMBERS)
                 .addParam(I.Member.USER_NAME,members)
                 .addParam(I.Member.GROUP_HX_ID,hxid)
+                .targetClass(String.class)
+                .execute(listener);
+    }
+    public static void removeGroupMember(Context context,String hxid,String username,
+                                         OnCompleteListener<String> listener){
+        OkHttpUtils<String> utils = new OkHttpUtils<>(context);
+        utils.setRequestUrl(I.REQUEST_DELETE_GROUP_MEMBER)
+                .addParam(I.Member.GROUP_HX_ID,hxid)
+                .addParam(I.Member.USER_NAME,username)
                 .targetClass(String.class)
                 .execute(listener);
     }
