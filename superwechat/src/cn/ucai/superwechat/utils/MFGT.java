@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.domain.User;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class MFGT {
 
     public static void gotoLoginCleanTask(Activity activity) {
         startActivity(activity, new Intent(activity, LoginActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK));
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     public static void gotoRegister(Activity activity) {
@@ -75,34 +76,40 @@ public class MFGT {
     public static void gotoUserProfile(Activity activity) {
         startActivity(activity, UserProfileActivity.class);
     }
+
     public static void gotoAddContact(Activity activity) {
         startActivity(activity, AddContactActivity.class);
     }
 
 
     public static void gotoFirent(Activity activity, User user) {
-        startActivity(activity,new Intent(activity,FirentProfileActivity.class)
-                .putExtra(I.User.TABLE_NAME,user));
+        startActivity(activity, new Intent(activity, FirentProfileActivity.class)
+                .putExtra(I.User.TABLE_NAME, user));
 
     }
-    public static void gotoFirent(Activity activity, String username) {
-        startActivity(activity,new Intent(activity,FirentProfileActivity.class)
-                .putExtra(I.User.USER_NAME,username));
 
+    public static void gotoFirent(Activity activity, String username) {
+        if (username.equals(EMClient.getInstance().getCurrentUser())) {
+            gotoUserProfile(activity);
+        } else {
+            startActivity(activity, new Intent(activity, FirentProfileActivity.class)
+                    .putExtra(I.User.USER_NAME, username));
+        }
     }
 
     public static void gotoAddFirent(Activity activity, String username) {
-        startActivity(activity,new Intent(activity,AddFirentActivity.class).
-        putExtra(I.User.USER_NAME,username));
+        startActivity(activity, new Intent(activity, AddFirentActivity.class).
+                putExtra(I.User.USER_NAME, username));
     }
 
     public static void gotoChat(Activity activity, String mUserName) {
-        startActivity(activity ,new Intent(activity, ChatActivity.class)
-        .putExtra("userId",mUserName));
+        startActivity(activity, new Intent(activity, ChatActivity.class)
+                .putExtra("userId", mUserName));
     }
-    public static  void gotoMiain(Activity activity){
-        startActivity(activity,new Intent(activity, MainActivity.class).
-                putExtra(I.BACK_MAIN_FROM_CHAT,true));
+
+    public static void gotoMiain(Activity activity) {
+        startActivity(activity, new Intent(activity, MainActivity.class).
+                putExtra(I.BACK_MAIN_FROM_CHAT, true));
     }
 
 }
