@@ -88,12 +88,12 @@ public class InviteMessage {
         this.groupName = groupName;
     }
 
-    public void setGroupInviter(String inviter) {
-        groupInviter = inviter;
-    }
-
     public String getGroupInviter() {
         return groupInviter;
+    }
+
+    public void setGroupInviter(String inviter) {
+        groupInviter = inviter;
     }
 
     public String getUsernick() {
@@ -120,36 +120,59 @@ public class InviteMessage {
         this.avatarTime = avatarTime;
     }
 
+    public String getAvatar() {
+        if (groupId == null) {
+            return "http://101.251.196.90:8000/SuperWeChatServerV2.0/downloadAvatar?name_or_hxid="
+                    + getFrom() + "&avatarType=user_avatar&m_avatar_suffix=" + getAvatarSuffix() + "&updatetime=" + getAvatarTime();
+        } else {
+            return "http://101.251.196.90:8000/SuperWeChatServerV2.0/downloadAvatar?name_or_hxid="
+                    + groupId + "&avatarType=group_icon&m_avatar_suffix=.jpg";
+        }
+    }
+
     public enum InviteMesageStatus {
 
         //==contact
-        /**being invited*/
+        /**
+         * being invited
+         */
         BEINVITEED,
-        /**being refused*/
+        /**
+         * being refused
+         */
         BEREFUSED,
-        /**remote user already agreed*/
+        /**
+         * remote user already agreed
+         */
         BEAGREED,
 
         //==group application
-        /**remote user apply to join*/
+        /**
+         * remote user apply to join
+         */
         BEAPPLYED,
-        /**you have agreed to join*/
+        /**
+         * you have agreed to join
+         */
         AGREED,
-        /**you refused the join request*/
+        /**
+         * you refused the join request
+         */
         REFUSED,
 
         //==group invitation
-        /**received remote user's invitation**/
+        /**
+         * received remote user's invitation
+         **/
         GROUPINVITATION,
-        /**remote user accept your invitation**/
+        /**
+         * remote user accept your invitation
+         **/
         GROUPINVITATION_ACCEPTED,
-        /**remote user declined your invitation**/
+        /**
+         * remote user declined your invitation
+         **/
         GROUPINVITATION_DECLINED
-    }
-    public String getAvatar(){
-        String path = "http://101.251.196.90:8000/SuperWeChatServerV2.0/downloadAvatar?name_or_hxid="
-                +getFrom()+"&avatarType=user_avatar&m_avatar_suffix="+getAvatarSuffix()+"&updatetime="+getAvatarTime();
-        return path;
     }
 
 }
